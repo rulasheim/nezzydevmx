@@ -1,0 +1,32 @@
+----------------------------------------------------------------
+GITHUB
+
+git add .
+
+git commit -m "dragon png home"
+
+git branch -M main
+
+git push -u origin main
+
+
+#########PARA BAJAR CAMBIOS###########
+
+git pull origin main
+
+----------------------------------------------------------------------
+        COMANDOS PARA OPTIMIZAR LARAVEL 
+
+
+php artisan optimize:clear
+
+php artisan route:clear
+php artisan route:cache
+
+php artisan config:clear
+php artisan config:cache
+
+php artisan view:clear
+
+
+-----------------------------------------------------------------------------------------------
