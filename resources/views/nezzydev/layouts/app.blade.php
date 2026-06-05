@@ -285,7 +285,7 @@
         for (let i = 0; i < 8; i++) createEmber();
     </script>
     <script>lucide.createIcons();</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 
 
     @stack('scripts')

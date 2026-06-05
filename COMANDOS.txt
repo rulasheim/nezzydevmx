@@ -1,0 +1,173 @@
+--------------------------------------------------------------------------------------------------------------
+LEVANTAR SERVIDOR:
+
+php artisan serve 
+
+---------------------------------------------------------------------------------------------------------------
+
+MIGRACIONES
+
+php artisan migrate
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+
+php artisan monitor:run
+
+para limpiar logs: php artisan model:prune
+
+php artisan schedule:work
+
+
+
+
+---------------------------------------------------------------------------------------------------------------
+PROBAR WindowsMetrics con tinker
+
+ $service = new \App\Services\WindowsMetricsService();
+ $data = $service->getMetrics();
+ dump($test->output());
+
+ (generar key de laragon con cliente para poder extraer los datos)
+ ---------------------------------------------------------------------------------------------------------------
+
+COMANDOS PARA ADMIN SEEDERS Y ADDRESS
+
+php artisan db:seed --class=AddressSeeder
+
+
+
+composer require leandrocfe/filament-apex-charts -W
+
+
+
+----------------------------------------------------------------
+GITHUB
+
+*** RUTA EN SERVIDOR DE PRODUCCION : cd /var/www/heimcore
+
+
+git add .
+
+git commit -m "HOME ANIMADO"
+
+git branch -M main
+
+git push -u origin main
+
+
+#########PARA BAJAR CAMBIOS###########
+
+git pull origin main
+
+----------------------------------------------------------------------
+        COMANDOS PARA OPTIMIZAR LARAVEL 
+
+
+php artisan optimize:clear
+
+php artisan route:clear
+php artisan route:cache
+
+php artisan config:clear
+php artisan config:cache
+
+php artisan view:clear
+
+
+-----------------------------------------------------------------------------------------------
+DEPENDENCIAS PARA BCK DE FORTIGATE SERVICE 
+
+- composer require guzzlehttp/guzzle
+
+
+$fb = new \App\Services\FortiBCKService();
+
+// Ejecutamos la prueba
+$res = $fb->testBackup(
+    'FortiPrueba', 
+    '172.28.57.254',    // Tu IP
+    '4443',         // Tu Puerto
+    'heimtechmx',       // Tu Usuario
+    'H31m_teCh!25'  // Tu Password
+);
+
+// Ver el resultado detallado
+dd($res);
+
+
+//COMANDO PARA CLI NAS
+
+composer require phpseclib/phpseclib 
+
+//PARAA PDF REPORTES
+composer require barryvdh/laravel-dompdf
+
+//INSTALAR ICONOS PERSONALIZADOS
+
+composer require secondnetwork/blade-tabler-icons
+
+
+
+--------------------------------------------------------------------------
+
+EJECUTAR MANUALMENTE SERVICE MONITOREO FORTIGATE/FIREWALLS/SWITCHES
+
+// Instanciar y correr todo
+$service = new \App\Services\FortiGateService();
+$results = $service->getAllMetrics();  // Solo extrae, no guarda en DB
+
+// — o —
+
+$results = $service->updateMetricsInDatabase();  // Extrae Y guarda en DB
+
+
+---------------------------------------------------------------------------
+
+ACTIVAR WINRM EN SERVIDOR NUEVO EJECUTAR EN POWERSHELL 
+
+winrm quickconfig
+
+Set-Item -Path WSMan:\localhost\Service\Auth\Basic -Value $true
+Set-Item -Path WSMan:\localhost\Service\AllowUnencrypted -Value $true
+
+Get-Item WSMan:\localhost\Service\Auth\Basic
+Get-Item WSMan:\localhost\Service\AllowUnencrypted
+
+CONFIGURAR EN CONFIG> WINRM.PHP EL NUEVO SERVIDOR Y EJECUTAR COMANDOS:
+
+php artisan config:clear && php artisan config:cache
+php artisan tinker
+
+DESPUES PROBAR EN TINKER CON: 
+
+     // ESTE EJECUTA SERVIDOR INDIVIDUAL
+
+$s = new App\Services\WindowsWinRMMetricsService(
+    ip: '172.28.155.13',
+    user: 'heimtechmonitoreo',
+    password: 'jU#7z1A1VJ',
+);
+$s->getRawMetrics();
+
+    //ESTE EJECUTA TODO  EL SERVICE 
+
+    foreach (config('winrm.servers') as $server) {
+    $s = new App\Services\WindowsWinRMMetricsService(
+        ip: $server['ip'],
+        user: $server['user'] ?? config('winrm.user'),
+        password: $server['password'] ?? config('winrm.password'),
+    );
+    $s->flushCache();
+    $metric = $s->storeMetrics();
+    $s->storeDiskSnapshot();
+    dump($server['ip'] . ' → ' . ($metric ? 'OK ✓' : 'FALLÓ ✗'));
+}
+
+
+------------------------------------------------------------------------------
+
+
+

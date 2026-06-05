@@ -36,11 +36,7 @@
         pointer-events:none;
     "></div>
 
-    {{--
-        Canvas del fuego: position:fixed sobre TODA la pantalla.
-        pointer-events:none para no bloquear nada.
-        z-index alto pero debajo del nav.
-    --}}
+    {{-- Canvas del fuego --}}
     <canvas id="fire-canvas" style="
         position:fixed;
         top:0; left:0;
@@ -54,31 +50,33 @@
         <div style="display:grid; grid-template-columns:1fr 1.15fr; gap:2rem; align-items:center;">
 
             {{-- Left --}}
-            <div class="animate-fade-up">
+            <div class="js-reveal-fade" style="opacity:0; transform:translateY(20px);">
 
                 <div class="tag" style="margin-bottom:1.5rem; display:flex; align-items:center; gap:0.75rem;">
                     <span style="display:inline-block; width:30px; height:1px; background:linear-gradient(90deg,var(--color-primary),var(--color-amber));"></span>
                     Desarrollo · Marca · Crecimiento
                 </div>
 
-                <h1 style="
-                    font-family:var(--font-display);
-                    font-size:clamp(2.5rem,6vw,4.2rem);
-                    font-weight:700;
-                    line-height:1.1;
-                    margin-bottom:1.5rem;
-                    letter-spacing:0.02em;
+                {{-- H1 con Efecto Máquina de Escribir --}}
+                <h1 id="hero-title" style="
+                    font-family: var(--font-display);
+                    font-size: clamp(2.5rem, 6vw, 4.2rem);
+                    font-weight: 700;
+                    line-height: 1.1;
+                    margin-bottom: 1.5rem;
+                    letter-spacing: 0.02em;
+                    min-height: calc(clamp(2.5rem, 6vw, 4.2rem) * 3.3);
                 ">
-                    TECNOLOGÍA<br>
-                    QUE <span class="highlight">ARDE</span><br>
-                    PARA TI.
+                    <span id="type-line-1" style="display:block; overflow:hidden; padding-bottom:0.06em;"></span>
+                    <span id="type-line-2" style="display:block; overflow:hidden; padding-bottom:0.06em;"></span>
+                    <span id="type-line-3" style="display:block; overflow:hidden; padding-bottom:0.06em;"></span>
                 </h1>
 
                 <p style="color:var(--color-muted); font-size:1.05rem; max-width:460px; margin-bottom:2.5rem; line-height:1.75;">
                     Construimos tu presencia digital desde cero — páginas web, sistemas a la medida y campañas que convierten. Todo bajo un mismo techo.
                 </p>
 
-                <div style="display:flex; gap:1rem; flex-wrap:wrap;" class="animate-fade-up-2">
+                <div style="display:flex; gap:1rem; flex-wrap:wrap;">
                     <a href="{{ route('servicios') }}" class="btn-primary">
                         <span>Ver servicios</span>
                         <i data-lucide="arrow-right" style="width:15px;height:15px;position:relative;z-index:1;"></i>
@@ -88,24 +86,27 @@
                     </a>
                 </div>
 
-                {{-- Stats --}}
-                <div class="animate-fade-up-3" style="
+                {{-- Stats Animados por JS --}}
+                <div style="
                     display:flex; gap:3rem; margin-top:4rem;
                     padding-top:2rem; border-top:1px solid var(--color-border);
                 ">
                     @foreach([
-                        ['50+', 'Proyectos'],
-                        ['100%','Satisfacción'],
-                        ['3+',  'Años'],
-                    ] as [$num, $label])
+                        ['50', 'Proyectos', '+'],
+                        ['100', 'Satisfacción', '%'],
+                        ['3', 'Años', '+'],
+                    ] as [$num, $label, $suffix])
                     <div>
-                        <div style="
-                            font-family:var(--font-display);
-                            font-size:2rem; font-weight:700;
-                            background:linear-gradient(90deg,var(--color-primary),var(--color-amber));
-                            -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-                            background-clip:text;
-                        ">{{ $num }}</div>
+                        <div style="display: flex; align-items: baseline;">
+                            <div class="js-counter" data-target="{{ $num }}" style="
+                                font-family:var(--font-display);
+                                font-size:2rem; font-weight:700;
+                                background:linear-gradient(90deg,var(--color-primary),var(--color-amber));
+                                -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+                                background-clip:text;
+                            ">0</div>
+                            <span style="font-family:var(--font-display); font-size:1.6rem; font-weight:700; color:var(--color-amber);">{{ $suffix }}</span>
+                        </div>
                         <div style="font-size:0.78rem; color:var(--color-muted); margin-top:0.2rem; font-family:var(--font-mono);">{{ $label }}</div>
                     </div>
                     @endforeach
@@ -118,8 +119,8 @@
                 display:flex; align-items:center; justify-content:center;
                 min-height:600px; width:100%;
                 cursor:crosshair;
+                perspective: 1200px;
             ">
-                {{-- Glow ambiental --}}
                 <div id="dragon-glow" style="
                     position:absolute; inset:0;
                     background:radial-gradient(ellipse 75% 65% at 52% 50%, rgba(232,34,10,0.18) 0%, rgba(255,107,26,0.07) 45%, transparent 70%);
@@ -127,7 +128,6 @@
                     animation: dragonPulse 4s ease-in-out infinite;
                 "></div>
 
-                {{-- Imagen dragón --}}
                 <img
                     src="{{ asset('images/dragon.png') }}"
                     alt="Dragón NezzyDev"
@@ -143,10 +143,10 @@
                         animation: dragonFloat 5s ease-in-out infinite, dragonEntry 1.2s ease-out both;
                         transform-origin:center center;
                         user-select:none; pointer-events:none;
+                        transition: filter 0.5s ease, transform 0.1s ease-out;
                     "
                 />
 
-                {{-- Brasas CSS decorativas idle --}}
                 <div style="position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:2;">
                     @for($i = 0; $i < 10; $i++)
                     <span style="
@@ -163,7 +163,6 @@
                     @endfor
                 </div>
 
-                {{-- Hint --}}
                 <div id="fire-hint" style="
                     position:absolute; bottom:10px; left:50%; transform:translateX(-50%);
                     font-family:'JetBrains Mono',monospace; font-size:0.68rem;
@@ -174,7 +173,6 @@
                     <i data-lucide="flame" style="width:11px;height:11px;color:#E8220A;"></i>
                     PASA EL CURSOR SOBRE EL DRAGÓN
                 </div>
-
             </div>
 
         </div>
@@ -187,11 +185,13 @@
     <div class="container" style="padding-top:5rem;">
 
         <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:3rem; flex-wrap:wrap; gap:1.5rem;">
-            <div>
+            <div class="js-reveal-fade" style="opacity:0; transform:translateY(25px);">
                 <div class="tag" style="margin-bottom:0.75rem;">// Servicios</div>
                 <h2 class="section-title">LO QUE <span class="highlight">FORJAMOS</span></h2>
             </div>
-            <a href="{{ route('servicios') }}" class="btn-outline">Ver todos</a>
+            <div class="js-reveal-fade" style="opacity:0; transform:translateY(25px);">
+                <a href="{{ route('servicios') }}" class="btn-outline">Ver todos</a>
+            </div>
         </div>
 
         <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem;">
@@ -200,7 +200,7 @@
                 ['settings-2', 'Sistemas a Medida', 'Software diseñado para tus procesos internos. CRMs, ERPs, sistemas de cotización y más.',          'var(--color-accent)'],
                 ['flame',      'Marketing & Marca',  'Identidad visual, campañas de Meta, Google y TikTok. Hacemos crecer tu presencia digital.',        'var(--color-amber)'],
             ] as [$icon, $title, $desc, $color])
-            <div class="fire-card" style="padding:2rem; position:relative; overflow:hidden;">
+            <div class="fire-card js-reveal-card" style="padding:2rem; position:relative; overflow:hidden; opacity:0; transform:translateY(35px) scale(0.95); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);">
                 <div style="
                     position:absolute; top:0; right:0;
                     width:80px; height:80px;
@@ -238,13 +238,13 @@
     <div class="fire-divider" style="margin-top:5rem;"></div>
 </section>
 
-{{-- CTA STRIP --}}
+{{-- CTA STRIP (CORREGIDO: Clase js-reveal-fade aplicada en el contenedor correcto) --}}
 <section style="padding:5rem 0; position:relative; overflow:hidden;">
     <div style="
         position:absolute; inset:0;
         background:radial-gradient(ellipse 60% 100% at 50% 50%, rgba(232,34,10,0.08) 0%, transparent 70%);
     "></div>
-    <div class="container" style="text-align:center; position:relative;">
+    <div class="container js-reveal-fade" style="text-align:center; position:relative; opacity:0; transform:translateY(25px);">
         <div class="tag" style="margin-bottom:1rem;">// ¿Listo para encender tu negocio?</div>
         <h2 class="section-title" style="margin-bottom:1.5rem;">
             EMPIEZA HOY.<br>
@@ -288,14 +288,39 @@
             drop-shadow(0 0 130px rgba(255,107,26,0.42))
             drop-shadow(0 0 28px rgba(255,225,80,0.38));
     }
-    #dragon-img { transition:filter 0.5s ease; }
+
+    .highlight {
+        color: #ff3b00;
+        font-weight: 800;
+        display: inline-block;
+        transition: text-shadow 0.6s ease-in-out;
+    }
+
+    .cursor-pipe::after {
+        content: '|';
+        animation: parpadeo-cursor 0.7s infinite;
+        color: #ff3b00;
+        margin-left: 3px;
+        font-weight: 300;
+    }
+
+    @keyframes parpadeo-cursor {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+    }
+
+    /* Transición suave gatillada por JS */
+    .reveal-active {
+        opacity: 1 !important;
+        transform: translateY(0) scale(1) !important;
+        transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
 </style>
 @endpush
 
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    lucide.createIcons();
 
     const scene   = document.getElementById('dragon-scene');
     const img     = document.getElementById('dragon-img');
@@ -303,7 +328,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const hint    = document.getElementById('fire-hint');
     const ctx     = canvas.getContext('2d');
 
-    // ── Canvas cubre toda la ventana (position:fixed) ─────────────
     let DPR = window.devicePixelRatio || 1;
 
     function resizeCanvas() {
@@ -316,14 +340,8 @@ document.addEventListener('DOMContentLoaded', function () {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // ── Posición real de la boca en coordenadas de VENTANA ────────
-    // El PNG tiene el dragón volando hacia la izquierda.
-    // La cabeza/boca está en la esquina inferior-izquierda del PNG:
-    //   - X: ~22% del ancho de la imagen desde su borde izquierdo
-    //   - Y: ~60% del alto de la imagen desde su borde superior
-    // getBoundingClientRect() nos da la posición real en pantalla.
-    const MOUTH_X_PCT = 0.29;   // ← ajusta si necesitas calibrar
-    const MOUTH_Y_PCT = 0.70;   // ↑ ajusta si necesitas calibrar
+    const MOUTH_X_PCT = 0.29;
+    const MOUTH_Y_PCT = 0.70;
 
     function getMouthViewport() {
         const r = img.getBoundingClientRect();
@@ -333,7 +351,6 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     }
 
-    // ── Partículas ────────────────────────────────────────────────
     const particles = [];
     let fireIntensity  = 0;
     let targetIntensity = 0;
@@ -343,7 +360,6 @@ document.addEventListener('DOMContentLoaded', function () {
             this.x = x + (Math.random()-0.5) * 12;
             this.y = y + (Math.random()-0.5) * 9;
 
-            // fuego sale hacia la IZQUIERDA con ligero spread
             const spread  = 0.42;
             const angle   = Math.PI + (Math.random()-0.5) * spread;
             const speed   = (4.5 + Math.random() * 6) * fi;
@@ -361,10 +377,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         update() {
-            this.x    += this.vx;
-            this.y    += this.vy;
-            this.vx   *= 0.950;
-            this.vy   *= 0.950;
+            this.x     += this.vx;
+            this.y     += this.vy;
+            this.vx    *= 0.950;
+            this.vy    *= 0.950;
             this.angle += this.spin;
             this.life  -= this.decay;
             if (this.type === 'fire')  { this.size *= 0.966; this.vy -= 0.22; }
@@ -411,12 +427,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // ── Render loop ───────────────────────────────────────────────
     function render() {
-        // canvas es fixed full-screen: limpiar todo
         ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
-        // suavizar transición
         fireIntensity += (targetIntensity - fireIntensity) * 0.075;
 
         if (fireIntensity > 0.04) {
@@ -426,7 +439,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 particles.push(new Particle(m.x, m.y, fireIntensity));
             }
 
-            // glow en la boca
             ctx.save();
             ctx.globalAlpha = fireIntensity * 0.42;
             const g = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, 110 * fireIntensity);
@@ -440,7 +452,6 @@ document.addEventListener('DOMContentLoaded', function () {
             ctx.restore();
         }
 
-        // actualizar & dibujar partículas
         for (let i = particles.length - 1; i >= 0; i--) {
             particles[i].update();
             if (particles[i].alive) particles[i].draw();
@@ -451,16 +462,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     render();
 
-    // hint tras 1.8s
     setTimeout(() => { if (!targetIntensity) hint.style.opacity = '1'; }, 1800);
 
-    // ── Hover ─────────────────────────────────────────────────────
     scene.addEventListener('mouseenter', () => {
         targetIntensity = 1;
         hint.style.opacity = '0';
     });
     scene.addEventListener('mouseleave', () => {
         targetIntensity = 0;
+        if(img) img.style.transform = 'rotateX(0deg) rotateY(0deg)';
         setTimeout(() => { if (!targetIntensity) hint.style.opacity = '1'; }, 1400);
     });
     scene.addEventListener('touchstart', () => {
@@ -468,6 +478,145 @@ document.addEventListener('DOMContentLoaded', function () {
         hint.style.opacity = '0';
         setTimeout(() => { targetIntensity = 0; }, 2800);
     }, { passive: true });
+
+    scene.addEventListener('mousemove', function (e) {
+        const rect = scene.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const moveX = ((x / rect.width) - 0.5) * 28;
+        const moveY = ((y / rect.height) - 0.5) * -28;
+
+        if(img && targetIntensity === 1) {
+            img.style.transform = `rotateX(${moveY}deg) rotateY(${moveX}deg) translateZ(20px)`;
+        }
+    });
+
+    const textoLinea1 = "TECNOLOGÍA";
+    const textoQue    = "QUE ";
+    const textoArde   = "ARDE";
+    const textoLinea3 = "PARA TI.";
+
+    const elLinea1 = document.getElementById('type-line-1');
+    const elLinea2 = document.getElementById('type-line-2');
+    const elLinea3 = document.getElementById('type-line-3');
+
+    const VELOCIDAD_ESCRITURA = 65; 
+
+    function escribirTexto(elemento, texto, callbackPorCaracter) {
+        return new Promise((resolve) => {
+            let i = 0;
+            function type() {
+                if (i < texto.length) {
+                    const char = texto.charAt(i);
+                    if (callbackPorCaracter) {
+                        callbackPorCaracter(char);
+                    } else {
+                        elemento.textContent += char;
+                    }
+                    i++;
+                    setTimeout(type, VELOCIDAD_ESCRITURA);
+                } else {
+                    resolve();
+                }
+            }
+            type();
+        });
+    }
+
+    async function ejecutarMaquinaDeEscribir() {
+        if (elLinea1) {
+            elLinea1.classList.add('cursor-pipe');
+            await escribirTexto(elLinea1, textoLinea1);
+            elLinea1.classList.remove('cursor-pipe');
+        }
+        if (elLinea2) {
+            elLinea2.classList.add('cursor-pipe');
+            await escribirTexto(elLinea2, textoQue);
+            
+            const spanArde = document.createElement('span');
+            spanArde.id = "hero-arde";
+            spanArde.className = "highlight";
+            elLinea2.appendChild(spanArde);
+
+            await escribirTexto(spanArde, textoArde);
+            elLinea2.classList.remove('cursor-pipe');
+        }
+        if (elLinea3) {
+            elLinea3.classList.add('cursor-pipe');
+            await escribirTexto(elLinea3, textoLinea3);
+        }
+
+        setTimeout(() => {
+            const spanFuego = document.getElementById('hero-arde');
+            if (spanFuego) {
+                spanFuego.style.background = 'linear-gradient(90deg, var(--color-primary), var(--color-amber))';
+                spanFuego.style.webkitBackgroundClip = 'text';
+                spanFuego.style.webkitTextFillColor = 'transparent';
+                spanFuego.style.backgroundClip = 'text';
+                spanFuego.style.textShadow = '0 0 25px rgba(232,34,10,0.95), 0 0 50px rgba(255,107,26,0.6)';
+            }
+        }, 150);
+    }
+
+    setTimeout(ejecutarMaquinaDeEscribir, 300);
+
+    function animarMétricas(elemento) {
+        const target = parseInt(elemento.getAttribute('data-target'), 10);
+        const duracion = 1800;
+        const startTime = performance.now();
+
+        function actualizarConteo(currentTime) {
+            const elapTime = currentTime - startTime;
+            const progreso = Math.min(elapTime / duracion, 1);
+            const easeProgress = progreso * (2 - progreso);
+            const valorActual = Math.floor(easeProgress * target);
+
+            elemento.textContent = valorActual;
+
+            if (progreso < 1) {
+                requestAnimationFrame(actualizarConteo);
+            } else {
+                elemento.textContent = target;
+            }
+        }
+        requestAnimationFrame(actualizarConteo);
+    }
+
+    const opcionesObserver = {
+        root: null,
+        threshold: 0.10, // Bajado un poco el umbral para asegurar gatillado rápido
+        rootMargin: "0px 0px -20px 0px"
+    };
+
+    const scrollObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                if (entry.target.classList.contains('js-reveal-fade')) {
+                    entry.target.classList.add('reveal-active');
+                    observer.unobserve(entry.target);
+                }
+                
+                if (entry.target.querySelector('.js-counter')) {
+                    const contadores = entry.target.querySelectorAll('.js-counter');
+                    contadores.forEach(counter => animarMétricas(counter));
+                    observer.unobserve(entry.target);
+                }
+
+                if (entry.target.classList.contains('js-reveal-card')) {
+                    const cards = Array.from(document.querySelectorAll('.js-reveal-card'));
+                    cards.forEach((card, idx) => {
+                        setTimeout(() => {
+                            card.classList.add('reveal-active');
+                        }, idx * 140);
+                    });
+                }
+            }
+        });
+    }, opcionesObserver);
+
+    document.querySelectorAll('.js-reveal-fade').forEach(el => scrollObserver.observe(el));
+    document.querySelectorAll('.js-reveal-card').forEach(el => scrollObserver.observe(el));
+
 });
 </script>
 @endpush

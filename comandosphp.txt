@@ -30,3 +30,5 @@ php artisan view:clear
 
 
 -----------------------------------------------------------------------------------------------
+    const MOUTH_X_PCT = 0.29;   // ← ajusta si necesitas calibrar
+    const MOUTH_Y_PCT = 0.70;   // ↑ ajusta si necesitas calibrar

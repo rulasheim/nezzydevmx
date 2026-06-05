@@ -44,7 +44,7 @@
                 [
                     'icon'  => 'layout-template',
                     'title' => 'Landing Pages',
-                    'badge' => 'Desde $8,500',
+                    'badge' => 'Desde $2,500 MXN',
                     'desc'  => 'Páginas de conversión rápidas, modernas y optimizadas. Ideal para emprendedores y campañas específicas.',
                     'items' => ['Diseño personalizado','Optimización móvil','Formulario de contacto','Alta velocidad de carga','Entrega en 7 días'],
                     'color' => 'var(--color-primary)',
@@ -52,7 +52,7 @@
                 [
                     'icon'  => 'building-2',
                     'title' => 'Sitios Corporativos',
-                    'badge' => 'Desde $22,000',
+                    'badge' => 'Desde $10,000 MXN',
                     'desc'  => 'Tu presencia profesional completa. Multi-página, con panel de administración y SEO integrado.',
                     'items' => ['Hasta 8 páginas','Panel de administración','Blog / noticias','SEO básico','Soporte 3 meses'],
                     'color' => 'var(--color-accent)',

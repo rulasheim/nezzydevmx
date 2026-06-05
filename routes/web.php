@@ -13,3 +13,7 @@ Route::get('/contacto',    fn() => view('nezzydev.contacto'))->name('contacto');
 Route::post('/contacto',   [App\Http\Controllers\ContactoController::class, 'store'])->name('contacto.store');
 
 Route::get('/descubre', fn() => view('nezzydev.wizard'))->name('wizard');
+
+Route::get('/test-anim', function () {
+    return view('test-animation');
+});
